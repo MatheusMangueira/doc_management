@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 
 export class UserDTO {
@@ -25,16 +25,15 @@ export class UserDTO {
    })
       password: string;
 
-   @IsString()
-   @IsNotEmpty({
-      message: "Role is required."
-   })
-      role: string;
+   @IsArray()
+      roles: string[];
 
-   constructor(name: string, email: string, password: string, role: string) {
+
+   constructor(name: string, email: string, password: string, roles: string[]) {
       this.name = name;
       this.email = email;
       this.password = password;
-      this.role = role;
+      this.roles = roles;
+
    }
 }

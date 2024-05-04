@@ -1,17 +1,37 @@
 import { Repository } from "typeorm";
 import { UserModel } from "../../../models";
 import { UserDTO } from "../../../DTOs";
-
+import { hash } from "bcryptjs";
+import { rolesServiceIntance } from "../../factorys";
 
 export class UserService {
-   constructor(private userRepository: Repository<UserModel>) { }
+   constructor(
+      private userRepository: Repository<UserModel>) { }
 
    async create(data: UserDTO) {
+
       try {
 
-         const user = this.userRepository.create({
-            ...data
+         const passwordHash = await hash(data.password, 8);
+
+         // get all roles
+         const roles = await rolesServiceIntance.getAll();
+         // get all roles id
+         const getDataRoles = data.roles.map(item => item);
+
+         // filter roles and compare with dataFilterRole
+         const filterRoles = roles.filter((role) => {
+            return getDataRoles.includes(role.id);
          });
+
+
+         const user = this.userRepository.create({
+            ...data,
+            password: passwordHash,
+            roles: filterRoles
+
+         });
+
 
          const createUser = await this.userRepository.save(user);
 
