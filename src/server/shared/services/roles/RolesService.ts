@@ -1,4 +1,4 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { RolesModel } from "../../../models";
 import { RolesDTO } from "../../../DTOs";
 
@@ -59,6 +59,29 @@ export class RolesService {
          throw new Error("Roles not found");
       }
    }
+
+   async getByIds(ids: string[]) {
+      try {
+         const roles = await this.repository.find({
+            where: {
+               id:
+                  In(ids)
+            }
+         });
+
+         if (!roles) {
+            throw new Error("roles not found!");
+         }
+
+         return roles;
+
+
+      } catch (error) {
+         console.log(error, "error from get roles by ids");
+         throw new Error("Roles not found");
+      }
+   }
+
 
    async update(id: string, data: RolesDTO) {
       try {
